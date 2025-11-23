@@ -27,6 +27,15 @@ async def read_root(request: Request):
 
 @app.post("/login", response_class=HTMLResponse)
 async def login(request: Request, username: str = Form(...)):
+    username = username.strip()
+
+    if not username:
+        return templates.TemplateResponse("login.html", {
+            "request": request,
+            "error": "Por favor, escribe un nombre."
+        })
+
+
     if not username[0].isupper():
         return templates.TemplateResponse("login.html", {
             "request": request,
@@ -36,7 +45,6 @@ async def login(request: Request, username: str = Form(...)):
     user_key = username.lower()
 
     if user_key in FAKE_USERS_DB:
-
         user_data = FAKE_USERS_DB[user_key]
         is_auror = (user_data["role"] == "AUROR")
         service = get_spell_service()
