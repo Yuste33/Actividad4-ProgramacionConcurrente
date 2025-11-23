@@ -2,3 +2,6 @@
 fastapi
 uvicorn[standard]
 pydantic
+
+# Para el apartado visual
+jinja2 python-multipart

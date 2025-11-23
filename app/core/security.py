@@ -2,8 +2,11 @@ from fastapi import Depends, HTTPException, status
 
 FAKE_USERS_DB = {
     "harry": {"role": "AUROR"},
+    "dumbledore": {"role": "AUROR"},
+    "severus": {"role": "AUROR"},
     "ron": {"role": "APPRENTICE"},
-    "dolores": {"role": "INQUISITOR"},
+    "hermione": {"role": "APPRENTICE"},
+    "dobie": {"role": "APPRENTICE"}
 }
 
 def get_current_user(user_id: str = "harry"):

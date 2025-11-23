@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Acceso al Ministerio</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Ministerio de Magia</h1>
+        <p>Identificación de Personal</p>
+
+        {% if error %}
+            <div class="error-message">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form action="/login" method="post">
+            <input type="text" name="username" placeholder="Nombre de Mago (Debe empezar con Mayúscula)" required>
+
+            <button type="submit">Acceder al Sistema</button>
+        </form>
+
+        <div class="footer">
+            Sistema Seguro AOP v1.0
+        </div>
+    </div>
+</body>
+</html>

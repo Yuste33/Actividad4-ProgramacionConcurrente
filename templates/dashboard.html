@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Control Mágico</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+    <style>
+        body {
+            display: block !important;
+            height: auto !important;
+            padding-top: 50px;
+            padding-bottom: 50px;
+        }
+
+        .dashboard-container {
+            width: 800px;
+            background-color: #1e1e1e;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.2);
+            border: 1px solid #333;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #444;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .spell-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 2rem;
+            background: #252525;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 10px;
+            border-bottom: 1px solid #333;
+        }
+
+        th {
+            color: #bb86fc;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header">
+            <h1>Ministerio de Magia</h1>
+            <div>
+                <span>Mago: <strong>{{ user }}</strong></span>
+                <a href="/" style="color: #ff5555; margin-left: 15px; text-decoration: none;">[Cerrar Sesión]</a>
+            </div>
+        </div>
+
+        <h3>✨ Crear Nuevo Hechizo ✨</h3>
+
+        <form action="/create_spell_web" method="post" class="spell-form">
+            <input type="hidden" name="user_id" value="{{ user }}">
+
+            <input type="text" name="name" placeholder="Nombre del Hechizo (ej: Expelliarmus)" required>
+            <input type="number" name="power_level" placeholder="Nivel de Poder (1-10)" min="1" max="10" required>
+            <input type="text" name="incantation" placeholder="Encantamiento Verbal" required class="full-width">
+            <input type="text" name="description" placeholder="Descripción del efecto..." required class="full-width">
+
+            <button type="submit" class="full-width">Registrar Hechizo</button>
+        </form>
+
+        <h3>📜 Hechizos Registrados 📜 </h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Poder</th>
+                    <th>Encantamiento</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for spell in spells %}
+                <tr>
+                    <td>{{ spell.name }}</td>
+                    <td>{{ spell.power_level }}</td>
+                    <td><em>{{ spell.incantation }}</em></td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="3" style="text-align:center; color: #666;">No hay hechizos registrados hoy.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
