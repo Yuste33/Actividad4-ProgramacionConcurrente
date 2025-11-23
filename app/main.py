@@ -81,7 +81,7 @@ async def create_spell_web(
         return templates.TemplateResponse("dashboard.html", {
             "request": request,
             "user": user_id,
-            "is_auror": False,  # Forzamos a que vea la vista restringida
+            "is_auror": False,  # vista restringida
             "spells": current_spells,
             "error": "ALERTA DE SEGURIDAD: No tienes rango de AUROR para registrar hechizos."
         })
