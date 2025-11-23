@@ -13,15 +13,28 @@ class Hechizo:
         self.description = description
 
     def execute(self, user_id: str) -> str:
-        # Corrección: Usamos self.description en lugar de self.effect
         if self.power_level > 7:
-            return f"¡{self.name} ejecutado por {user_id}! Un hechizo FUERTE. Efecto: {self.description}"
-        return f"¡{self.name} ejecutado por {user_id}! Descripcion: {self.description}"
+            return f"¡{self.name} ejecutado por {user_id}! Un hechizo de ALTO NIVEL. Efecto: {self.description}"
+        return f"¡{self.name} ejecutado por {user_id}! Efecto: {self.description}"
 
 
 class SpellService:
     def __init__(self):
         self.spells: Dict[str, Hechizo] = {}
+        self._populate_initial_data()
+
+    def _populate_initial_data(self):
+        initial_spells = [
+            ("Wingardium Leviosa", 1, "Wingardium Leviosa", "Hace levitar objetos pequeños."),
+            ("Expelliarmus", 4, "Expelliarmus", "Desarma al oponente quitándole su varita."),
+            ("Expecto Patronum", 8, "Expecto Patronum",
+             "Invoca una encarnación de energía positiva para protegerse de Dementores."),
+            ("Avada Kedavra", 10, "Avada Kedavra", "Causa la muerte instantánea. (PROHIBIDO)"),
+        ]
+
+        for name, power, incantation, desc in initial_spells:
+            new_id = str(uuid.uuid4())
+            self.spells[new_id] = Hechizo(name, power, incantation, desc, new_id)
 
     @audit_log
     def create_spell(self, spell_data: SpellCreate) -> Hechizo:

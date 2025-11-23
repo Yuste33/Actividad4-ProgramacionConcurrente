@@ -45,6 +45,27 @@
             grid-column: span 2;
         }
 
+        /* Estilo para mensajes dentro del dashboard */
+        .msg-box {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .msg-error { background-color: #cf6679; color: black; }
+        .msg-success { background-color: #03dac6; color: black; }
+
+        .read-only-banner {
+            background-color: #333;
+            color: #888;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border: 1px dashed #555;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -57,9 +78,7 @@
             border-bottom: 1px solid #333;
         }
 
-        th {
-            color: #bb86fc;
-        }
+        th { color: #bb86fc; }
     </style>
 </head>
 <body>
@@ -68,22 +87,42 @@
             <h1>Ministerio de Magia</h1>
             <div>
                 <span>Mago: <strong>{{ user }}</strong></span>
+                {% if is_auror %}
+                    <span style="color: #03dac6; font-size: 0.8em; margin-left: 5px;">(AUROR)</span>
+                {% else %}
+                    <span style="color: #cf6679; font-size: 0.8em; margin-left: 5px;">(APRENDIZ)</span>
+                {% endif %}
+
                 <a href="/" style="color: #ff5555; margin-left: 15px; text-decoration: none;">[Cerrar Sesión]</a>
             </div>
         </div>
 
-        <h3>✨ Crear Nuevo Hechizo ✨</h3>
+        {% if error %}
+            <div class="msg-box msg-error">{{ error }}</div>
+        {% endif %}
+        {% if success %}
+            <div class="msg-box msg-success">{{ success }}</div>
+        {% endif %}
 
-        <form action="/create_spell_web" method="post" class="spell-form">
-            <input type="hidden" name="user_id" value="{{ user }}">
 
-            <input type="text" name="name" placeholder="Nombre del Hechizo (ej: Expelliarmus)" required>
-            <input type="number" name="power_level" placeholder="Nivel de Poder (1-10)" min="1" max="10" required>
-            <input type="text" name="incantation" placeholder="Encantamiento Verbal" required class="full-width">
-            <input type="text" name="description" placeholder="Descripción del efecto..." required class="full-width">
+        {% if is_auror %}
+            <h3>✨ Crear Nuevo Hechizo</h3>
+            <form action="/create_spell_web" method="post" class="spell-form">
+                <input type="hidden" name="user_id" value="{{ user }}">
 
-            <button type="submit" class="full-width">Registrar Hechizo</button>
-        </form>
+                <input type="text" name="name" placeholder="Nombre del Hechizo (ej: Expelliarmus)" required>
+                <input type="number" name="power_level" placeholder="Nivel de Poder (1-10)" min="1" max="10" required>
+                <input type="text" name="incantation" placeholder="Encantamiento Verbal" required class="full-width">
+                <input type="text" name="description" placeholder="Descripción del efecto..." required class="full-width">
+
+                <button type="submit" class="full-width">Registrar Hechizo</button>
+            </form>
+        {% else %}
+            <div class="read-only-banner">
+                <h3>🔒 Modo de Solo Lectura</h3>
+                <p>Tu rango actual no te permite registrar nuevos hechizos en la base de datos oficial.</p>
+            </div>
+        {% endif %}
 
         <h3>📜 Hechizos Registrados 📜 </h3>
         <table>
@@ -97,7 +136,11 @@
             <tbody>
                 {% for spell in spells %}
                 <tr>
-                    <td>{{ spell.name }}</td>
+                    <td>
+                        <a href="/spell_detail/{{ spell.spell_id }}" style="color: #bb86fc; text-decoration: none; font-weight: bold;">
+                            {{ spell.name }}
+                        </a>
+                    </td>
                     <td>{{ spell.power_level }}</td>
                     <td><em>{{ spell.incantation }}</em></td>
                 </tr>

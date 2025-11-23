@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle del Hechizo</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+    <style>
+        .detail-card {
+            background-color: #1e1e1e;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(187, 134, 252, 0.15);
+            width: 500px;
+            border: 1px solid #333;
+            text-align: left;
+        }
+        .detail-row {
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+        label {
+            color: #bb86fc;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .value {
+            font-size: 1.1rem;
+            color: #fff;
+        }
+        .incantation {
+            font-style: italic;
+            font-family: 'Times New Roman', serif;
+            font-size: 1.3rem;
+            color: #03dac6;
+        }
+        .back-btn {
+            background-color: transparent;
+            border: 1px solid #bb86fc;
+            color: #bb86fc;
+            margin-top: 20px;
+        }
+        .back-btn:hover {
+            background-color: #bb86fc;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="detail-card">
+        <h1 style="text-align: center; border-bottom: none;">{{ spell.name }}</h1>
+
+        <div class="detail-row">
+            <label>Encantamiento</label>
+            <span class="value incantation">"{{ spell.incantation }}"</span>
+        </div>
+
+        <div class="detail-row">
+            <label>Nivel de Poder</label>
+            <span class="value">
+                Nivel {{ spell.power_level }} / 10
+            </span>
+        </div>
+
+        <div class="detail-row">
+            <label>Descripción y Efectos</label>
+            <p class="value" style="line-height: 1.5;">{{ spell.description }}</p>
+        </div>
+
+        <div class="detail-row">
+            <label>Identificador del Ministerio</label>
+            <span class="value" style="font-size: 0.8rem; color: #666;">{{ spell.spell_id }}</span>
+        </div>
+
+        <button class="back-btn" onclick="history.back()">⬅ Volver al Listado</button>
+    </div>
+</body>
+</html>

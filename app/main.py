@@ -27,23 +27,25 @@ async def read_root(request: Request):
 
 @app.post("/login", response_class=HTMLResponse)
 async def login(request: Request, username: str = Form(...)):
-
-    # La primera letra debe estar en mayusculas
     if not username[0].isupper():
         return templates.TemplateResponse("login.html", {
             "request": request,
-            "error": "Acceso Denegado: El nombre debe comenzar con una letra Mayúscula por respeto al protocolo mágico."
+            "error": "Acceso Denegado: El nombre debe comenzar con una letra Mayúscula."
         })
 
     user_key = username.lower()
 
     if user_key in FAKE_USERS_DB:
+
+        user_data = FAKE_USERS_DB[user_key]
+        is_auror = (user_data["role"] == "AUROR")
         service = get_spell_service()
         current_spells = service.list_all_spells()
 
         return templates.TemplateResponse("dashboard.html", {
             "request": request,
             "user": user_key,
+            "is_auror": is_auror,
             "spells": current_spells
         })
     else:
@@ -51,6 +53,7 @@ async def login(request: Request, username: str = Form(...)):
             "request": request,
             "error": "Error: Este mago no consta en los archivos del Ministerio."
         })
+
 
 @app.post("/create_spell_web", response_class=HTMLResponse)
 async def create_spell_web(
@@ -62,6 +65,18 @@ async def create_spell_web(
         description: str = Form(...),
         service: SpellService = Depends(get_spell_service)
 ):
+    user_data = FAKE_USERS_DB.get(user_id)
+
+    if not user_data or user_data["role"] != "AUROR":
+        # Recargamos la página pero con un mensaje de error y SIN crear el hechizo
+        current_spells = service.list_all_spells()
+        return templates.TemplateResponse("dashboard.html", {
+            "request": request,
+            "user": user_id,
+            "is_auror": False,  # Forzamos a que vea la vista restringida
+            "spells": current_spells,
+            "error": "ALERTA DE SEGURIDAD: No tienes rango de AUROR para registrar hechizos."
+        })
 
     spell_data = SpellCreate(
         name=name,
@@ -70,14 +85,29 @@ async def create_spell_web(
         description=description
     )
 
-    # se llama al seervicio
     service.create_spell(spell_data)
 
-    # se carga nuevamente el dashboard
     current_spells = service.list_all_spells()
 
     return templates.TemplateResponse("dashboard.html", {
         "request": request,
         "user": user_id,
-        "spells": current_spells
+        "is_auror": True,
+        "spells": current_spells,
+        "success": "Hechizo registrado correctamente en el Departamento de Misterios."
     })
+
+
+@app.get("/spell_detail/{spell_id}", response_class=HTMLResponse)
+async def view_spell_detail(
+        request: Request,
+        spell_id: str,
+        service: SpellService = Depends(get_spell_service)
+):
+    # Buscamos el hechizo en el servicio
+    spell = service.get_spell_by_id(spell_id)
+
+    if not spell:
+        return templates.TemplateResponse("login.html", {"request": request, "error": "Hechizo no encontrado"})
+
+    return templates.TemplateResponse("spell_detail.html", {"request": request, "spell": spell})
