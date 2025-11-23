@@ -1,6 +1,7 @@
 import uuid
 from typing import Dict
 from app.schemas.spell_schema import SpellCreate, SpellOut
+from app.core.auditing import audit_log
 
 
 class Hechizo:
@@ -14,7 +15,7 @@ class Hechizo:
     def execute(self, user_id: str) -> str:
         # Corrección: Usamos self.description en lugar de self.effect
         if self.power_level > 7:
-            return f"¡{self.name} ejecutado por {user_id}! Un hechizo de ALTO NIVEL. Efecto: {self.description}"
+            return f"¡{self.name} ejecutado por {user_id}! Un hechizo FUERTE. Efecto: {self.description}"
         return f"¡{self.name} ejecutado por {user_id}! Descripcion: {self.description}"
 
 
@@ -22,6 +23,7 @@ class SpellService:
     def __init__(self):
         self.spells: Dict[str, Hechizo] = {}
 
+    @audit_log
     def create_spell(self, spell_data: SpellCreate) -> Hechizo:
         new_id = str(uuid.uuid4())
 
