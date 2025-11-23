@@ -1,7 +1,0 @@
-# Framework web asíncrono y de alto rendimiento
-fastapi
-uvicorn[standard]
-pydantic
-
-# Para el apartado visual
-jinja2 python-multipart

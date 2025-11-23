@@ -21,7 +21,7 @@ def audit_log(func):
 
         duration = end_time - start_time
 
-        logger.info(f"Tiempo: {duration:.4f} segundos", extra={"magic_id": "SYSTEM"})
+        logger.info(f"Tiempo: {duration:.7f} segundos", extra={"magic_id": "SYSTEM"})
         return result
 
     return wrapper
