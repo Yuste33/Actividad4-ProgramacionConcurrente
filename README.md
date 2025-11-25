@@ -25,5 +25,12 @@ Asegúrate de tener Python 3.8+ instalado.
 
 ### 2. Instalación de Dependencias
 
-```bash
+```
 pip install -r requirements.txt
+```
+
+### 3. Ejecución
+
+```bash
+ uvicorn app.main:app --reload
+```
